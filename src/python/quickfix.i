@@ -3,7 +3,7 @@
   temp = std::string((char*)PyString_AsString($input));
   $1 = &temp;
 } 	 
-	  	 
+
 %typemap(argout) std::string& {
   if( std::string("$1_type") == "std::string &" )
   {
@@ -116,7 +116,31 @@ def start(self):
   }
 #endif
 }
-
+/*added for throwing python exception handling */
+%{
+#define SWIG_FILE_WITH_INIT  
+extern char* AllocationException(char*); 
+static PyObject* pbadallocexception;  
+%}
+%init %{
+    pbadallocationexception = PyErr_NewException("_quickfix.MemoryAllocException", NULL, NULL);
+    Py_INCREF(pbadallocexception);
+    PyModule_AddObject(m, "MemoryAllocException", pbadallocexception);
+%}
+%except(python) {
+    try {
+	        $function
+			AllocationException(error);
+    } catch (MemoryAllocException &e) {
+        PyErr_SetString(pbadallocexception, const_cast<char*>(e.what()));
+        SWIG_fail;
+    }
+}
+extern AllocationException(char* error);
+%pythoncode %{
+    MemoryAllocException = _quickfix.MemoryAllocException;
+%}
+/*change over*/
 %feature("director:except") FIX::Application::toApp {
 #ifdef SWIGPYTHON
   if( $error != NULL ) {
