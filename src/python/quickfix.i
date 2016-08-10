@@ -118,27 +118,28 @@ def start(self):
 }
 /*added for throwing python exception handling */
 %{
-#define SWIG_FILE_WITH_INIT  
-extern char* AllocationException(char*); 
+#define SWIG_BAD_ALLOC
+extern char* throwPyerror(char*); 
 static PyObject* pbadallocexception;  
 %}
 %init %{
-    pbadallocationexception = PyErr_NewException("_quickfix.MemoryAllocException", NULL, NULL);
+    pbadallocationexception = PyErr_NewException("_quickfix.AllocationException", NULL, NULL);
     Py_INCREF(pbadallocexception);
-    PyModule_AddObject(m, "MemoryAllocException", pbadallocexception);
+    PyModule_AddObject(m, "AllocationException", pbadallocexception);
 %}
-%except(python) {
+%exception(python) allocate{
     try {
-	        $function
-			AllocationException(error);
-    } catch (MemoryAllocException &e) {
-        PyErr_SetString(pbadallocexception, const_cast<char*>(e.what()));
+	        if($error != NULL)
+				throw error;
+	   } catch (std::exception & e) {
+        PyErr_SetString(pbadallocationexception, const_cast<char*>(e.what()));
         SWIG_fail;
+		throw;
     }
 }
-extern AllocationException(char* error);
+extern allocate(size_t size);
 %pythoncode %{
-    MemoryAllocException = _quickfix.MemoryAllocException;
+    PyException = _quickfix.AllocationException;
 %}
 /*change over*/
 %feature("director:except") FIX::Application::toApp {
