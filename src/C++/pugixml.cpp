@@ -6258,7 +6258,7 @@ PUGI__NS_BEGIN
 				longjmp(*error_handler, 1);
 			#else
 				//throw std::bad_alloc();
-				throw AllocationException("Memory Allocation Failed in xpath_allocator");
+				throw AllocationException("Memory Allocation Failed in xpath_allocator::allocate");
 			#endif
 			}
 
@@ -9290,7 +9290,7 @@ PUGI__NS_BEGIN
 			throw_error("Out of memory");
 		#else
 			//throw std::bad_alloc();
-			throw AllocationException("Memory Allocation Failed in xpath_allocator");
+			throw AllocationException("out of memory");
 		#endif
 		}
 
@@ -10246,7 +10246,7 @@ namespace pugi
 				return;
 			#else
 				//throw std::bad_alloc();
-				throw AllocationException("Memory Allocation Failed in xpath_allocator");
+				throw AllocationException("Memory Allocation Failed in xpath_assign");
 			#endif
 			}
 
@@ -10545,7 +10545,7 @@ namespace pugi
 			_result.error = "Out of memory";
 		#else
 			//throw std::bad_alloc();
-			throw AllocationException("Memory Allocation Failed in xpath_allocator");
+			throw AllocationException("Memory Allocation Failed in xpath_query");
 		#endif
 		}
 		else
