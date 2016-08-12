@@ -85,7 +85,7 @@
 
 namespace pugi
 {
-	class AllocationException;
+	struct AllocationException;
 	// Character type used for all internal storage and operations; depends on PUGIXML_WCHAR_MODE
 	typedef PUGIXML_CHAR char_t;
 
