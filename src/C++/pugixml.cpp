@@ -6201,11 +6201,11 @@ PUGI__NS_BEGIN
 //};
 
 // Base exception type.
-struct AllocationException : public std::exception
+	struct AllocationException : public std::exception
 {
 	std::string type;
 	std::string detail;
-	AllocationException(const std::string&  error,const std::string& what = "")
+	AllocationException(char* error, const std::string& what = "")
 	{
 		detail = error;
 		type = what;
@@ -9316,8 +9316,7 @@ PUGI__NS_BEGIN
 
 		void throw_error_oom()
 		{
-			AllocationException objallocexcept= new pugi::AllocationException();
-		#ifdef PUGIXML_NO_EXCEPTIONS
+			#ifdef PUGIXML_NO_EXCEPTIONS
 			throw_error("Out of memory");
 		#else
 			//throw std::bad_alloc();
@@ -10277,7 +10276,7 @@ namespace pugi
 				return;
 			#else
 				//throw std::bad_alloc();
-				throw AllocationException("Memory Allocation Failed in xpath_assign");
+				//throw AllocationException("Memory Allocation Failed in xpath_assign");
 			#endif
 			}
 
@@ -10576,7 +10575,7 @@ namespace pugi
 			_result.error = "Out of memory";
 		#else
 			//throw std::bad_alloc();
-			throw AllocationException("Memory Allocation Failed in xpath_query");
+			//throw AllocationException("Memory Allocation Failed in xpath_query");
 		#endif
 		}
 		else
