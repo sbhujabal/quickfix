@@ -116,18 +116,11 @@ def start(self):
   }
 #endif
 }
-/*added for throwing python exception handling 
-%init %{
-	static PyObject* pbadallocexception;  
-    pbadallocationexception = PyErr_NewException("_quickfix.AllocationException", NULL, NULL);
-    Py_INCREF(pbadallocexception);
-    PyModule_AddObject(m, "AllocationException", pbadallocexception);
-%}*/
 %module AllocationException {
 #include "pugixml.hpp"
-extern void AllocationException(const std::string&  error,const std::string& what);/*SendPyError(char* error,PyObject *error);*/
+extern void AllocationException(char*  error,const std::string& what);
 %}
-extern void AllocationException(const std::string&  error,const std::string& what);
+extern void AllocationException(char* error,const std::string& what);
 %exception pugi::pugixml::AllocationException {
 #ifdef SWIGPYTHON
     try {
@@ -148,7 +141,6 @@ extern void AllocationException(const std::string&  error,const std::string& wha
 		SWIG_Python_Raise(SWIG_NewPointerObj((new AllocationException >(_e))), SWIGTYPE_p_PUGI__AllocationException, SWIG_POINTER_OWN), "AllocationException", SWIGTYPE_p_PUGI__AllocationException); SWIG_fail;
 		Py_XDECREF( pbadallocexception );
 		throw;
-
     }
 	#endif
 }
