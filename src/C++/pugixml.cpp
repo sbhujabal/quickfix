@@ -6183,6 +6183,34 @@ PUGI__NS_END
 
 // Allocator used for AST and evaluation stacks
 PUGI__NS_BEGIN
+//class AllocationException : public std::exception
+//{
+//protected:
+//	char *errormsg;
+//public:
+//	virtual void SendErrortoSwig(char* error)
+//	{
+//		errormsg = error;
+//	}
+//	AllocationException()
+//	{
+//
+//	}
+//
+//	virtual ~AllocationException() throw(){};
+//};
+
+// Base exception type.
+struct AllocationException : public std::exception
+{
+	std::string type;
+	std::string detail;
+	AllocationException(const std::string&  error,const std::string& what = "")
+	{
+		detail = error;
+		type = what;
+	}
+};
 	struct xpath_memory_block
 	{	
 		xpath_memory_block* next;
@@ -6249,20 +6277,22 @@ PUGI__NS_BEGIN
 
 		void* allocate(size_t size)
 		{
-			void* result = allocate_nothrow(size);
+			/*try
+			{*/
+				void* result = allocate_nothrow(size);
 
-			if (!result)
-			{
-			#ifdef PUGIXML_NO_EXCEPTIONS
-				assert(error_handler);
-				longjmp(*error_handler, 1);
-			#else
-				//throw std::bad_alloc();
-				throw AllocationException("Memory Allocation Failed in xpath_allocator::allocate");
-			#endif
-			}
-
-			return result;
+				if (!result)
+				{
+					#ifdef PUGIXML_NO_EXCEPTIONS
+						assert(error_handler);
+						longjmp(*error_handler, 1);
+					#else
+						//throw std::bad_alloc();
+					throw AllocationException("Memory Allocation Failed in xpath_allocator::allocate");
+					#endif
+				}
+				return result;
+			//}
 		}
 
 		void* reallocate(void* ptr, size_t old_size, size_t new_size)
@@ -9286,6 +9316,7 @@ PUGI__NS_BEGIN
 
 		void throw_error_oom()
 		{
+			AllocationException objallocexcept= new pugi::AllocationException();
 		#ifdef PUGIXML_NO_EXCEPTIONS
 			throw_error("Out of memory");
 		#else
