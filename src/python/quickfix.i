@@ -116,31 +116,45 @@ def start(self):
   }
 #endif
 }
-/*added for throwing python exception handling */
-%{
-#define SWIG_BAD_ALLOC
-extern char* throwPyerror(char*); 
-static PyObject* pbadallocexception;  
-%}
+/*added for throwing python exception handling 
 %init %{
+	static PyObject* pbadallocexception;  
     pbadallocationexception = PyErr_NewException("_quickfix.AllocationException", NULL, NULL);
     Py_INCREF(pbadallocexception);
     PyModule_AddObject(m, "AllocationException", pbadallocexception);
+%}*/
+%module AllocationException {
+#include "pugixml.hpp"
+extern void AllocationException(const std::string&  error,const std::string& what);/*SendPyError(char* error,PyObject *error);*/
 %}
-%exception(python) allocate{
+extern void AllocationException(const std::string&  error,const std::string& what);
+%exception pugi::pugixml::AllocationException {
+#ifdef SWIGPYTHON
     try {
-	        if($error != NULL)
-				throw error;
-	   } catch (std::exception & e) {
+		if($error != NULL)
+		{
+			static PyObject* pbadallocexception;  
+			pbadallocationexception = SWIG_exception("_quickfix.AllocationException", NULL, NULL);
+			Py_INCREF(pbadallocexception);
+			PyModule_AddObject(m, "AllocationException", pbadallocexception);
+	    	throw;
+		}
+	   } 
+	catch (std::exception & e)
+	 {
         PyErr_SetString(pbadallocationexception, const_cast<char*>(e.what()));
-        SWIG_fail;
+		AllocationException(e.what(), pbadallocationexception);
+		std::cout << e.what() << std::endl;
+		SWIG_Python_Raise(SWIG_NewPointerObj((new AllocationException >(_e))), SWIGTYPE_p_PUGI__AllocationException, SWIG_POINTER_OWN), "AllocationException", SWIGTYPE_p_PUGI__AllocationException); SWIG_fail;
+		Py_XDECREF( pbadallocexception );
 		throw;
+
     }
+	#endif
 }
-extern allocate(size_t size);
 %pythoncode %{
-    PyException = _quickfix.AllocationException;
-%}
+ SwigAllocationException = _quickfix.AllocationException
+ %}
 /*change over*/
 %feature("director:except") FIX::Application::toApp {
 #ifdef SWIGPYTHON
@@ -274,7 +288,7 @@ extern allocate(size_t size);
 %include <Acceptor.h>
 %include <SocketAcceptor.h>
 %include <DataDictionary.h>
-
+%include <pugixml.hpp>
 %pythoncode %{
 #ifdef SWIGPYTHON
 class SocketInitiator(SocketInitiatorBase):
