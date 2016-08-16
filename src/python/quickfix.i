@@ -1,10 +1,11 @@
 #ifdef SWIGPYTHON
-%module AllocationException {
+%module AllocationException%{
 #include "pugixml.hpp"
 extern void AllocationException(char*  error,const std::string& what);
 %}
+%include "pugixml.hpp"
 extern void AllocationException(char* error,const std::string& what);
-%exception pugi::pugixml::AllocationException {
+%exception pugi::pugixml::AllocationException{
 #ifdef SWIGPYTHON
     try {
 			if($error != NULL)
@@ -27,6 +28,7 @@ extern void AllocationException(char* error,const std::string& what);
     }
 	#endif
 }
+
 %pythoncode %{
  SwigAllocationException = _quickfix.AllocationException
  %}
