@@ -1,15 +1,16 @@
 #ifdef SWIGPYTHON
-%module AllocationException%{
-#include "pugixml.hpp"
+%except AllocationException%{
+#include "pugixml.cpp"
 extern void AllocationException(char*  error,const std::string& what);
 %}
-%include "pugixml.hpp"
+%include "pugixml.cpp"
 extern void AllocationException(char* error,const std::string& what);
-%exception pugi::pugixml::AllocationException{
+%exception {
 #ifdef SWIGPYTHON
     try {
 			if($error != NULL)
 			{
+				$action;
 				static PyObject* pbadallocexception;  
 				pbadallocationexception = SWIG_exception("_quickfix.AllocationException", NULL, NULL);
 				Py_INCREF(pbadallocexception);
@@ -17,21 +18,30 @@ extern void AllocationException(char* error,const std::string& what);
 	    		throw;
 			}
 	   } 
-	catch (std::exception & e)
-	 {
-        PyErr_SetString(pbadallocationexception, const_cast<char*>(e.what()));
-		AllocationException(e.what(), pbadallocationexception);
-		std::cout << e.what() << std::endl;
-		SWIG_Python_Raise(SWIG_NewPointerObj((new AllocationException >(_e))), SWIGTYPE_p_PUGI__AllocationException, SWIG_POINTER_OWN), "AllocationException", SWIGTYPE_p_PUGI__AllocationException); SWIG_fail;
-		Py_XDECREF( pbadallocexception );
-		throw;
-    }
+	   catch(pugi::AllocationException &e)
+	   {
+			SWIG_Python_Raise(SWIG_NewPointerObj((new pugi::AllocationException(static_cast< const pugi::AllocationException& > >(_e))), SWIGTYPE_p_pugi__AllocationException, SWIG_POINTER_OWN), "AllocationException", SWIGTYPE_p_pugi__AllocationException); SWIG_fail;
+			throw;
+	   }
+	   catch (const std::exception & e)
+	   {
+			std::cout << e.what() << std::endl;
+			SWIG_exception(SWIG_RuntimeError, (std::string("C++ std::exception: ") + e.what()).c_str());
+			Py_XDECREF( pbadallocexception );
+			throw;
+	   }
+	 /* catch (std::exception & e)
+	  {
+			PyErr_SetString(pbadallocationexception, const_cast<char*>(e.what()));
+			AllocationException(e.what(), pbadallocationexception);
+			std::cout << e.what() << std::endl;
+			Py_XDECREF( pbadallocexception );
+			throw;
+	  }*/
 	#endif
 }
 
-%pythoncode %{
- SwigAllocationException = _quickfix.AllocationException
- %}
+
 /*change over*/
 %typemap(in) std::string& (std::string temp) {
   temp = std::string((char*)PyString_AsString($input));
