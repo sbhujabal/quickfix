@@ -6212,6 +6212,7 @@ PUGI__NS_BEGIN
 		{
 			return detail;
 		}
+	  ~AllocationException() throw() {}
 	};
 	struct xpath_memory_block
 	{	
