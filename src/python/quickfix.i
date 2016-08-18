@@ -1,9 +1,24 @@
 #ifdef SWIGPYTHON
-{%
-#include "pugixml.cpp"
+%module pugixml
+%{
+#include "pugixml.hpp"
 extern void AllocationException(char*  error,const std::string& what);
 %}
-%include "pugixml.cpp"
+%include "pugixml.hpp"
+	// Base exception type.
+	struct AllocationException : public std::exception
+	{
+		std::string type;
+		char *detail;
+		AllocationException(char* what, const std::string& error = "") : type(error), detail(what)
+		{
+		}
+		virtual const char* what() const throw()
+		{
+			return detail;
+		}
+	  ~AllocationException() throw() {}
+	};
 extern void AllocationException(char* error,const std::string& what);
 %exception AllocationException{
 #ifdef SWIGPYTHON
