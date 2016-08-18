@@ -1,11 +1,11 @@
 #ifdef SWIGPYTHON
-%except AllocationException%{
+{%
 #include "pugixml.cpp"
 extern void AllocationException(char*  error,const std::string& what);
 %}
 %include "pugixml.cpp"
 extern void AllocationException(char* error,const std::string& what);
-%exception {
+%exception AllocationException{
 #ifdef SWIGPYTHON
     try {
 			if($error != NULL)
