@@ -10171,6 +10171,19 @@ PUGI__NS_END
 
 namespace pugi
 {
+	struct AllocationException : public std::exception
+	{
+		std::string type;
+		char *detail;
+		AllocationException(char* what, const std::string& error = "") : type(error), detail(what)
+		{
+		}
+		virtual const char* what() const throw()
+		{
+			return detail;
+		}
+		~AllocationException() throw() {}
+	};
 #ifndef PUGIXML_NO_EXCEPTIONS
 	PUGI__FN xpath_exception::xpath_exception(const xpath_parse_result& result_): _result(result_)
 	{
@@ -10278,8 +10291,8 @@ namespace pugi
 			#ifdef PUGIXML_NO_EXCEPTIONS
 				return;
 			#else
-				throw std::bad_alloc();
-				//throw AllocationException("Memory Allocation Failed in xpath_assign");
+				//throw std::bad_alloc();
+				throw AllocationException("Memory Allocation Failed in xpath_assign");
 			#endif
 			}
 
@@ -10577,8 +10590,9 @@ namespace pugi
 		#ifdef PUGIXML_NO_EXCEPTIONS
 			_result.error = "Out of memory";
 		#else
-			throw std::bad_alloc();
-			//throw AllocationException("Memory Allocation Failed in xpath_query");
+			//throw std::bad_alloc();
+			char *err = "Memory Allocation Failed in xpath_query";
+			throw AllocationException(err);
 		#endif
 		}
 		else

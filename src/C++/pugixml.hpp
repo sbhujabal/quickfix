@@ -211,6 +211,7 @@ namespace pugi
 	const unsigned int format_default = format_indent;
 		
 	// Forward declarations
+	struct AllocationException;
 	struct xml_attribute_struct;
 	struct xml_node_struct;
 
@@ -1002,7 +1003,6 @@ namespace pugi
 		xpath_type_string,	  // String
 		xpath_type_boolean	  // Boolean
 	};
-
 	// XPath parsing result
 	struct PUGIXML_CLASS xpath_parse_result
 	{
@@ -1025,6 +1025,9 @@ namespace pugi
 	// A single XPath variable
 	class PUGIXML_CLASS xpath_variable
 	{
+		//forward declaration
+		struct AllocationException;
+
 		friend class xpath_variable_set;
 
 	protected:
