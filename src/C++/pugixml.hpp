@@ -11,6 +11,8 @@
  * Copyright (C) 2003, by Kristen Wegner (kristen@tima.net)
  */
 
+
+
 #ifndef PUGIXML_VERSION
 // Define version macro; evaluates to major * 100 + minor so that it's safe to use in less-than comparisons
 #	define PUGIXML_VERSION 140
@@ -83,6 +85,7 @@
 
 namespace pugi
 {
+	struct AllocationException;
 	// Character type used for all internal storage and operations; depends on PUGIXML_WCHAR_MODE
 	typedef PUGIXML_CHAR char_t;
 
@@ -208,6 +211,7 @@ namespace pugi
 	const unsigned int format_default = format_indent;
 		
 	// Forward declarations
+	struct AllocationException;
 	struct xml_attribute_struct;
 	struct xml_node_struct;
 
@@ -999,7 +1003,6 @@ namespace pugi
 		xpath_type_string,	  // String
 		xpath_type_boolean	  // Boolean
 	};
-
 	// XPath parsing result
 	struct PUGIXML_CLASS xpath_parse_result
 	{
@@ -1022,6 +1025,10 @@ namespace pugi
 	// A single XPath variable
 	class PUGIXML_CLASS xpath_variable
 	{
+		//forward declaration
+
+		struct AllocationException;
+
 		friend class xpath_variable_set;
 
 	protected:
@@ -1037,7 +1044,6 @@ namespace pugi
 	public:
 		// Get variable name
 		const char_t* name() const;
-
 		// Get variable type
 		xpath_value_type type() const;
 

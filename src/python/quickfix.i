@@ -1,9 +1,45 @@
 #ifdef SWIGPYTHON
+%{
+#include "pugixml.hpp"
+extern void AllocationException(char*  error,const std::string& what);
+%}
+
+%include "pugixml.hpp"
+extern void AllocationException(char* error,const std::string& what);
+%exception AllocationException{
+#ifdef SWIGPYTHON
+    try {
+			if($error != NULL)
+			{
+				$action;
+				static PyObject* pbadallocexception;  
+				pbadallocationexception = SWIG_exception("_quickfix.AllocationException", NULL, NULL);
+				Py_INCREF(pbadallocexception);
+				PyModule_AddObject(m, "AllocationException", pbadallocexception);
+	    		throw;
+			}
+	   } 
+	   catch(pugi::AllocationException &e)
+	   {
+			SWIG_Python_Raise(SWIG_NewPointerObj((new pugi::AllocationException(static_cast< const pugi::AllocationException& > >(_e))), SWIGTYPE_p_pugi__AllocationException, SWIG_POINTER_OWN), "AllocationException", SWIGTYPE_p_pugi__AllocationException); SWIG_fail;
+			throw;
+	   }
+	   catch (const std::exception & e)
+	   {
+			std::cout << e.what() << std::endl;
+			SWIG_exception(SWIG_RuntimeError, (std::string("C++ std::exception: ") + e.what()).c_str());
+			Py_XDECREF( pbadallocexception );
+			throw;
+	   }
+		#endif
+}
+
+/*change over*/
 %typemap(in) std::string& (std::string temp) {
   temp = std::string((char*)PyString_AsString($input));
   $1 = &temp;
 } 	 
-	  	 
+
 %typemap(argout) std::string& {
   if( std::string("$1_type") == "std::string &" )
   {
@@ -58,7 +94,6 @@ def _quickfix_start_thread(i_or_a):
 	i_or_a.block()
 #endif
 %}
-
 %feature("shadow") FIX::Initiator::start() %{
 def start(self):
 	thread.start_new_thread(_quickfix_start_thread, (self,))
@@ -116,7 +151,6 @@ def start(self):
   }
 #endif
 }
-
 %feature("director:except") FIX::Application::toApp {
 #ifdef SWIGPYTHON
   if( $error != NULL ) {
@@ -249,7 +283,7 @@ def start(self):
 %include <Acceptor.h>
 %include <SocketAcceptor.h>
 %include <DataDictionary.h>
-
+%include <pugixml.hpp>
 %pythoncode %{
 #ifdef SWIGPYTHON
 class SocketInitiator(SocketInitiatorBase):
