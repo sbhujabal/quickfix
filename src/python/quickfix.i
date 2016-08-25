@@ -1,5 +1,4 @@
 #ifdef SWIGPYTHON
-%module pugixml
 %{
 #include "pugixml.hpp"
 extern void AllocationException(char*  error,const std::string& what);
@@ -41,7 +40,6 @@ extern void AllocationException(char* error,const std::string& what);
 	  }*/
 	#endif
 }
-
 
 /*change over*/
 %typemap(in) std::string& (std::string temp) {
@@ -103,7 +101,6 @@ def _quickfix_start_thread(i_or_a):
 	i_or_a.block()
 #endif
 %}
-
 %feature("shadow") FIX::Initiator::start() %{
 def start(self):
 	thread.start_new_thread(_quickfix_start_thread, (self,))
