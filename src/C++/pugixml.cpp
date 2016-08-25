@@ -10285,7 +10285,6 @@ namespace pugi
 		{
 			// make heap copy
 			xpath_node* storage = static_cast<xpath_node*>(impl::xml_memory::allocate(size_ * sizeof(xpath_node)));
-
 			if (!storage)
 			{
 			#ifdef PUGIXML_NO_EXCEPTIONS

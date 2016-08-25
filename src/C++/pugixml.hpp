@@ -1026,6 +1026,7 @@ namespace pugi
 	class PUGIXML_CLASS xpath_variable
 	{
 		//forward declaration
+
 		struct AllocationException;
 
 		friend class xpath_variable_set;
@@ -1043,7 +1044,6 @@ namespace pugi
 	public:
 		// Get variable name
 		const char_t* name() const;
-
 		// Get variable type
 		xpath_value_type type() const;
 
