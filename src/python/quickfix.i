@@ -3,6 +3,7 @@
 #include "pugixml.hpp"
 extern void AllocationException(char*  error,const std::string& what);
 %}
+
 %include "pugixml.hpp"
 extern void AllocationException(char* error,const std::string& what);
 %exception AllocationException{
@@ -30,15 +31,7 @@ extern void AllocationException(char* error,const std::string& what);
 			Py_XDECREF( pbadallocexception );
 			throw;
 	   }
-	 /* catch (std::exception & e)
-	  {
-			PyErr_SetString(pbadallocationexception, const_cast<char*>(e.what()));
-			AllocationException(e.what(), pbadallocationexception);
-			std::cout << e.what() << std::endl;
-			Py_XDECREF( pbadallocexception );
-			throw;
-	  }*/
-	#endif
+		#endif
 }
 
 /*change over*/
