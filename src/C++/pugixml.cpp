@@ -9322,8 +9322,8 @@ PUGI__NS_BEGIN
 			#ifdef PUGIXML_NO_EXCEPTIONS
 			throw_error("Out of memory");
 		#else
-			throw std::bad_alloc();
-			//throw AllocationException("out of memory");
+			//throw std::bad_alloc();
+			throw AllocationException("out of memory");
 		#endif
 		}
 
@@ -10290,8 +10290,8 @@ namespace pugi
 			#ifdef PUGIXML_NO_EXCEPTIONS
 				return;
 			#else
-				throw std::bad_alloc();
-				//throw AllocationException("Memory Allocation Failed in xpath_assign");
+				//throw std::bad_alloc();
+				throw AllocationException("Memory Allocation Failed in xpath_assign");
 			#endif
 			}
 
